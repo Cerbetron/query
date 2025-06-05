@@ -14,7 +14,7 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import { Resource } from './ResourceCard';
+import type { Resource } from '../utils/api';
 
 interface DetailModalProps {
   isOpen: boolean;
@@ -33,6 +33,11 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, resource }) 
       <ModalCloseButton />
       <ModalBody>
         {resource.description && <Text mb={4}>{resource.description}</Text>}
+        {resource.eligibility && (
+          <Text mb={2} fontStyle="italic">
+            Eligibility: {resource.eligibility}
+          </Text>
+        )}
         {resource.tags && resource.tags.length > 0 && (
           <Wrap mb={4}>
             {resource.tags.map((tag) => (
@@ -47,6 +52,16 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, resource }) 
             <Text fontWeight="bold">Partners Involved</Text>
             <Text>{resource.partners.join(', ')}</Text>
           </Stack>
+        )}
+        {resource.counties && (
+          <Text fontSize="sm" color="gray.600">
+            Counties: {resource.counties.join(', ')}
+          </Text>
+        )}
+        {resource.insurance_types && (
+          <Text fontSize="sm" color="gray.600">
+            Insurance: {resource.insurance_types.join(', ')}
+          </Text>
         )}
       </ModalBody>
       <ModalFooter>

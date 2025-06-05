@@ -6,11 +6,11 @@ import { searchResources, type Resource, type SearchFilters } from '../utils/api
 // List of predefined demo searches. Each label corresponds to filters passed
 // to the search API when the button is clicked.
 const demos: { label: string; filters: SearchFilters }[] = [
-  { label: 'wraparound for teens', filters: { keyword: 'wraparound', filters: ['teens'] } },
-  { label: 'residential services in Alameda', filters: { keyword: 'residential', filters: ['alameda'] } },
-  { label: 'drop in centers', filters: { keyword: 'drop in center', filters: ['center'] } },
-  { label: 'bilingual therapy', filters: { keyword: 'bilingual therapy', filters: ['bilingual'] } },
-  { label: 'family support groups', filters: { keyword: 'family support', filters: ['family'] } },
+  { label: 'wraparound for teens', filters: { keyword: 'wraparound', tags: ['teens'] } },
+  { label: 'residential services in Alameda', filters: { keyword: 'residential', county: 'Alameda' } },
+  { label: 'drop in centers', filters: { keyword: 'drop in center' } },
+  { label: 'bilingual therapy', filters: { keyword: 'bilingual therapy' } },
+  { label: 'family support groups', filters: { keyword: 'family support' } },
 ];
 
 /**

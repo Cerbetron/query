@@ -12,6 +12,14 @@ _demo_resources: List[ResourceOut] = [
         name="Resource One",
         url="https://example.com/1",
         description="First example resource",
+        eligibility="Teens in Alameda",
+        service_type="outpatient",
+        system="Education",
+        min_age=13,
+        max_age=18,
+        counties=["Alameda"],
+        insurance_types=["Private"],
+        partners=["Partner A"],
         tags=["example", "demo"],
     ),
     ResourceOut(
@@ -19,6 +27,13 @@ _demo_resources: List[ResourceOut] = [
         name="Resource Two",
         url="https://example.com/2",
         description="Second example resource",
+        eligibility="Adults in Contra Costa",
+        service_type="residential",
+        system="Healthcare",
+        min_age=18,
+        counties=["Contra Costa"],
+        insurance_types=["Medicaid"],
+        partners=["Partner B"],
         tags=["sample"],
     ),
     ResourceOut(
@@ -26,6 +41,13 @@ _demo_resources: List[ResourceOut] = [
         name="Resource Three",
         url="https://example.com/3",
         description="Third example resource",
+        eligibility="Youth drop in",
+        service_type="drop-in",
+        system="Housing",
+        max_age=25,
+        counties=["Alameda"],
+        insurance_types=["None"],
+        partners=["Partner C"],
         tags=["demo"],
     ),
     ResourceOut(
@@ -33,6 +55,11 @@ _demo_resources: List[ResourceOut] = [
         name="Resource Four",
         url="https://example.com/4",
         description="Fourth example resource",
+        eligibility="Bilingual therapy",
+        system="Healthcare",
+        counties=["San Francisco"],
+        insurance_types=["Private"],
+        partners=["Partner D"],
         tags=["demo", "test"],
     ),
     ResourceOut(
@@ -40,6 +67,11 @@ _demo_resources: List[ResourceOut] = [
         name="Resource Five",
         url="https://example.com/5",
         description="Fifth example resource",
+        eligibility="Support groups",
+        service_type="support",
+        counties=["Alameda"],
+        insurance_types=["Medicaid"],
+        partners=["Partner E"],
         tags=["example"],
     ),
 ]
@@ -47,7 +79,7 @@ _demo_resources: List[ResourceOut] = [
 
 @router.post("/search", response_model=List[ResourceOut])
 async def search_resources(payload: SearchRequest) -> List[ResourceOut]:
-    """Simple search over demo data."""
+    """Simple search over demo data using multiple filters."""
     results = _demo_resources
     if payload.keyword:
         keyword = payload.keyword.lower()
@@ -56,12 +88,38 @@ async def search_resources(payload: SearchRequest) -> List[ResourceOut]:
             for r in results
             if keyword in r.name.lower()
             or (r.description and keyword in r.description.lower())
+            or (r.eligibility and keyword in r.eligibility.lower())
         ]
-    if payload.filters:
+    if payload.tags:
         results = [
             r
             for r in results
-            if r.tags and any(tag in payload.filters for tag in r.tags)
+            if r.tags and any(tag in payload.tags for tag in r.tags)
+        ]
+    if payload.age is not None:
+        results = [
+            r
+            for r in results
+            if (
+                (r.min_age is None or r.min_age <= payload.age)
+                and (r.max_age is None or payload.age <= r.max_age)
+            )
+        ]
+    if payload.county:
+        results = [
+            r
+            for r in results
+            if r.counties and payload.county in r.counties
+        ]
+    if payload.insurance:
+        results = [
+            r
+            for r in results
+            if r.insurance_types and payload.insurance in r.insurance_types
+        ]
+    if payload.system:
+        results = [
+            r for r in results if r.system and r.system in payload.system
         ]
     return results
 
