@@ -14,18 +14,32 @@ __all__ = ["index_resources", "search_chroma"]
 
 # Default directory to persist the Chroma database
 _CHROMA_DIR = os.getenv("CHROMA_DIR", "./chroma_db")
+_CHROMA_URL = os.getenv("CHROMA_URL")
 
 # Initialize global model and Chroma collection
 _model: SentenceTransformer | None = None
 _collection: chromadb.api.types.Collection | None = None
+_client: chromadb.Client | chromadb.HttpClient | None = None
+
+
+def _get_client() -> chromadb.Client | chromadb.HttpClient:
+    """Return a Chroma client depending on configuration."""
+    global _client
+    if _client is None:
+        if _CHROMA_URL:
+            _client = chromadb.HttpClient(host=_CHROMA_URL)
+        else:
+            _client = chromadb.Client(
+                Settings(chroma_db_impl="duckdb+parquet", persist_directory=_CHROMA_DIR)
+            )
+    return _client
 
 
 def _get_collection() -> chromadb.api.types.Collection:
     """Return the Chroma collection, creating it if needed."""
     global _collection, _model
     if _collection is None:
-        client = chromadb.Client(Settings(chroma_db_impl="duckdb+parquet", persist_directory=_CHROMA_DIR))
-        _collection = client.get_or_create_collection("resources")
+        _collection = _get_client().get_or_create_collection("resources")
     if _model is None:
         _model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
     return _collection

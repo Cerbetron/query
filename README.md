@@ -19,3 +19,7 @@ The backend exposes a `/search` endpoint that supports the following fields:
 ## Data
 
 For demonstration purposes the API serves a handful of in-memory resources. The Excel loader and Chroma integration utilities are provided but not wired to the demo data.
+
+During startup the demo records are automatically indexed into Chroma. Keyword
+queries will use the vector index to rank results. You can load your own data
+via the utilities in `app/utils` and index them with `index_resources`.
