@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: query
+      POSTGRES_PASSWORD: query
+      POSTGRES_DB: query
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    volumes:
+      - chroma_data:/chroma/.chroma
+    ports:
+      - "8001:8000"
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://query:query@db:5432/query
+      CHROMA_URL: http://chroma:8000
+    depends_on:
+      - db
+      - chroma
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    environment:
+      REACT_APP_API_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:
+  chroma_data:
