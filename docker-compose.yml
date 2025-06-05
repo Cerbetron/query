@@ -21,11 +21,14 @@ services:
     environment:
       DATABASE_URL: postgresql://query:query@db:5432/query
       CHROMA_URL: http://chroma:8000
+      CHROMA_DIR: /data/chroma
     depends_on:
       - db
       - chroma
     ports:
       - "8000:8000"
+    volumes:
+      - backend_chroma:/data/chroma
 
   frontend:
     build: ./frontend
@@ -39,3 +42,4 @@ services:
 volumes:
   db_data:
   chroma_data:
+  backend_chroma:

@@ -1,2 +1,19 @@
-/.env
-/docker-compose.yml
+# Environment and dependency files
+.env
+__pycache__/
+*.pyc
+*.pyo
+
+# Python virtual environments
+venv/
+
+# Node modules and build output
+node_modules/
+frontend/build/
+
+# Logs
+*.log
+
+# Docker artifacts
+*.tar
+

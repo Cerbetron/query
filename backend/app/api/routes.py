@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 
 from app.schemas import SearchRequest, ResourceOut
+from app.chroma_search import index_resources, search_chroma
 
 router = APIRouter()
 
@@ -76,6 +77,9 @@ _demo_resources: List[ResourceOut] = [
     ),
 ]
 
+# Index demo resources into Chroma on startup
+index_resources([r.model_dump() for r in _demo_resources])
+
 
 @router.post("/search", response_model=List[ResourceOut])
 async def search_resources(payload: SearchRequest) -> List[ResourceOut]:
@@ -90,6 +94,10 @@ async def search_resources(payload: SearchRequest) -> List[ResourceOut]:
             or (r.description and keyword in r.description.lower())
             or (r.eligibility and keyword in r.eligibility.lower())
         ]
+        vector_ids = [int(m.get("id")) for m in search_chroma(payload.keyword) if m.get("id")]
+        if vector_ids:
+            order = {rid: idx for idx, rid in enumerate(vector_ids)}
+            results.sort(key=lambda r: order.get(r.id, len(order)))
     if payload.tags:
         results = [
             r

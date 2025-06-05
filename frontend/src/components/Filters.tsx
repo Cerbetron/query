@@ -8,10 +8,8 @@ import {
   Checkbox,
   CheckboxGroup,
   HStack,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
+  NumberInput,
+  NumberInputField,
   VStack,
 } from '@chakra-ui/react';
 
@@ -29,7 +27,7 @@ const systems = ['Education', 'Healthcare', 'Housing'];
 
 const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const [filters, setFilters] = useState<FiltersState>({
-    age: 0,
+    age: undefined,
     county: '',
     insurance: '',
     system: [],
@@ -45,18 +43,16 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
       <VStack spacing={4} align="stretch">
         <FormControl>
           <FormLabel>Age</FormLabel>
-          <Slider
-            aria-label="age-slider"
+          <NumberInput
             min={0}
             max={100}
-            value={filters.age}
-            onChange={(val) => setFilters((f) => ({ ...f, age: val }))}
+            value={filters.age ?? ''}
+            onChange={(_s, val) =>
+              setFilters((f) => ({ ...f, age: Number.isNaN(val) ? undefined : val }))
+            }
           >
-            <SliderTrack>
-              <SliderFilledTrack />
-            </SliderTrack>
-            <SliderThumb />
-          </Slider>
+            <NumberInputField placeholder="Any" />
+          </NumberInput>
         </FormControl>
 
         <FormControl>
