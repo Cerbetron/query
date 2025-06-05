@@ -15,16 +15,12 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-interface FiltersState {
-  age: number;
-  county: string;
-  insurance: string;
-  system: string[];
-  keyword: string;
-}
+import type { SearchFilters } from '../utils/api';
+
+type FiltersState = SearchFilters;
 
 interface FiltersProps {
-  onFilterChange: (filters: FiltersState) => void;
+  onFilterChange: (filters: SearchFilters) => void;
 }
 
 const counties = ['County A', 'County B', 'County C'];

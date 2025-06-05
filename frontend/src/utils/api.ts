@@ -10,7 +10,11 @@ const apiClient = axios.create({
 
 export interface SearchFilters {
   keyword?: string;
-  filters?: string[];
+  age?: number;
+  county?: string;
+  insurance?: string;
+  system?: string[];
+  tags?: string[];
 }
 
 export interface Resource {
@@ -18,6 +22,14 @@ export interface Resource {
   name: string;
   url?: string;
   description?: string;
+  eligibility?: string;
+  service_type?: string;
+  system?: string;
+  min_age?: number | null;
+  max_age?: number | null;
+  counties?: string[];
+  insurance_types?: string[];
+  partners?: string[];
   tags?: string[];
 }
 

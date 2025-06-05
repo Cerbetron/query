@@ -11,14 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import DetailModal from './DetailModal';
-
-export interface Resource {
-  id: number;
-  name: string;
-  description?: string;
-  tags?: string[];
-  partners?: string[];
-}
+import type { Resource } from '../utils/api';
 
 interface ResourceCardProps {
   resource: Resource;
@@ -49,6 +42,14 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
         {resource.partners && resource.partners.length > 0 && (
           <Text fontSize="sm" color="gray.600">
             Partners: {resource.partners.join(', ')}
+          </Text>
+        )}
+        {resource.system && (
+          <Text fontSize="sm" color="gray.600">System: {resource.system}</Text>
+        )}
+        {resource.counties && (
+          <Text fontSize="sm" color="gray.600">
+            Counties: {resource.counties.join(', ')}
           </Text>
         )}
         <Button alignSelf="start" onClick={onOpen} size="sm" colorScheme="blue">
